@@ -142,6 +142,8 @@ function pageInit(){
     
     //Create keyboard dynamically
     var keyboardHolder = document.getElementById("keyboardHolder");
+    var whiteKeyWidth = 55;
+    var blackKeyWidth = 22;
     var out = '';
     
     for(var i=0;i<notes.length;i++){
@@ -149,24 +151,34 @@ function pageInit(){
         
         if(notes[i]["keyColour"]=="white"){
             keyboardKey.className = "whiteKey";
-            keyboardKey.style.left = i*61+"px";
+            keyboardKey.style.left = i*(whiteKeyWidth+1)+"px";
+            
+            keyboardKey.addEventListener("mouseover",pianoKeyPress);
+            keyboardKey.addEventListener("mouseout",pianoKeyRelease);
+            keyboardKey.addEventListener("keydown",function(e){ if(e.keyCode == notes[i]["keyboardKey"]) pianoKeyPress(e);});
+            keyboardKey.addEventListener("keyup",function(e){ if(e.keyCode == notes[i]["keyboardKey"]) pianoKeyRelease(e);});
+            
         }
         else if(notes[i]["keyColour"]=="black"){
             keyboardKey.className = "blackKey";
-            keyboardKey.style.left = parseInt((i+1)*61-)+"px";
+            keyboardKey.style.left = parseInt((i-11)*(whiteKeyWidth+1)-blackKeyWidth/2)+"px";
         }
         else{ //blank
             continue;
         }
         
         keyboardHolder.appendChild(keyboardKey);
-    }
-
-    //Set event Listeners
-    
-    
+    }    
 }
 
+function pianoKeyPress(e){
+    console.log(this);
+    console.log(e);
+}
+
+function pianoKeyRelease(e){
+    
+}
 
 /*
 function setMusic(musicz){

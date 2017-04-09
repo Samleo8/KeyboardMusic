@@ -119,50 +119,59 @@ img{
 
 
 /*-------KEYBOARD--------*/
+#keyboard-global-container{
+    margin-top:80px;
+    height:200px;
+}
+
 #keyboardHolder{
     position: relative;
-    bottom: 10px;
     width:735px;
-    height: 170px;
+    height: 172px;
 }
 
 div.whiteKey{
 	border:#000 1px solid;
 	position:absolute;
 	height:170px;
-    width:60px;
+    width:55px;
 	z-index:1;
 }
 
 div.blackKey{
     position: absolute;
     z-index: 10;
-    bottom:86px;
+    bottom:88px;
     
-	height:84px;
+	width:22px;
+    height:84px;
 	
 	background-image:url("images/black-key.png");
 	background-repeat:no-repeat;
 }
 
-.letterHelp{
+.pianoKeyHelp{
 	text-transform:capitalize;
-	vertical-align:middle;
 	font-size:16px;
+    
 	bottom:190px;
-	text-align:center;
-	border:none;
+	
+    text-align:center;
+	
+    border:none;
 	height:auto;
 }
 
-.keyboardHelp{
+.keyboardKeyHelp{
 	text-transform:capitalize;
-	vertical-align:middle;
 	font-size:16px;
-	font-weight:bold;
-	bottom:10px;
-	text-align:center;
-	border:none;
+    font-weight:700;
+	
+    bottom:10px;
+	
+    text-align:center;
+	
+    border:none;
 	height:auto;
 }
 
@@ -200,6 +209,6 @@ input[type=submit]{
     display: -webkit-flex;
     display: flex;
 
-    -webkit-flex-flow: row wrap;
-    justify-content: space-around;
+    -webkit-flex-flow: row;
+    justify-content: center;
 }
