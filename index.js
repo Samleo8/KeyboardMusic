@@ -138,7 +138,7 @@ function pageInit(){
     
 	if(browserProperties["OSName"] == "Windows"){
         notes[10]["computerKey"] = 192;
-    }
+    }        
     
     //Create keyboard dynamically
     var keyboardHolder = document.getElementById("keyboardHolder");
@@ -147,36 +147,71 @@ function pageInit(){
     var out = '';
     
     for(var i=0;i<notes.length;i++){
+        if(notes[i]["keyColour"]=="blank") continue;
+        
         keyboardKey = document.createElement("div");
         
         if(notes[i]["keyColour"]=="white"){
-            keyboardKey.className = "whiteKey";
+            keyboardKey.className = "whiteKey"
+            keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
             keyboardKey.style.left = i*(whiteKeyWidth+1)+"px";
             
-            keyboardKey.addEventListener("mouseover",pianoKeyPress);
-            keyboardKey.addEventListener("mouseout",pianoKeyRelease);
-            keyboardKey.addEventListener("keydown",function(e){ if(e.keyCode == notes[i]["keyboardKey"]) pianoKeyPress(e);});
-            keyboardKey.addEventListener("keyup",function(e){ if(e.keyCode == notes[i]["keyboardKey"]) pianoKeyRelease(e);});
             
+            //Event Listener
+            keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
+            keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
         }
         else if(notes[i]["keyColour"]=="black"){
             keyboardKey.className = "blackKey";
+            keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
             keyboardKey.style.left = parseInt((i-11)*(whiteKeyWidth+1)-blackKeyWidth/2)+"px";
-        }
-        else{ //blank
-            continue;
+            
+            
+            //Event Listener
+            keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
+            keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
         }
         
         keyboardHolder.appendChild(keyboardKey);
     }    
+    
+    //Add event listeners
+    window.addEventListener("keydown",keyboard_press);
+    window.addEventListener("keyup",keyboard_release);
 }
 
-function pianoKeyPress(e){
-    console.log(this);
-    console.log(e);
+function keyboard_press(e){
+    for(var i=0;i<notes.length;i++){
+        if(notes[i]["keyColour"] == "blank") continue;
+        
+        if(e.keyCode==notes[i]["computerKey"]){
+            var ele = document.getElementById("key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"]);
+            pianoKeyPress(ele);
+            
+            break;
+        }
+    }
 }
 
-function pianoKeyRelease(e){
+function keyboard_release(e){
+    for(var i=0;i<notes.length;i++){
+        if(notes[i]["keyColour"] == "blank") continue;
+        
+        if(e.keyCode==notes[i]["computerKey"]){
+            var ele = document.getElementById("key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"]);
+            pianoKeyRelease(ele);
+            
+            break;
+        }
+    }
+}
+
+function pianoKeyPress(ele){
+    ele.className += " active";
+}
+
+function pianoKeyRelease(ele){
+    ele.className = ele.className.replaceAll(" active","");
     
 }
 
@@ -298,4 +333,13 @@ function findBrowserProperties(){
     else _browserProperties["OSName"]="Unknown OS";
     
     return _browserProperties;
+}
+
+/*-----------------PROTOTYPES---------------------*/
+String.prototype.replaceAll = function(find, replace){
+    return this.replace(new RegExp(find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), replace);
+}
+
+String.prototype.removeAll = function(find){
+    return this.replaceAll(find,"");
 }
