@@ -7,7 +7,7 @@
 html{
 	width:100%;
 	height:100%;
-	background:url(images/background.png);
+	background:url("images/background.png");
 	background-repeat:repeat;
     
     font-family:"Open Sans","Calibri","Arial",Sans-Serif;
@@ -134,16 +134,13 @@ div.whiteKey{
 	z-index:1;
 }
 
-span div{
-	font-weight:bold;
-	text-align:center;
-	vertical-align:middle;
-	background:#FFF;
-}
-
 div.blackKey{
+    position: absolute;
+    z-index: 10;
+    bottom:86px;
+    
 	height:84px;
-	bottom:86px;
+	
 	background-image:url("images/black-key.png");
 	background-repeat:no-repeat;
 }

@@ -153,10 +153,10 @@ function pageInit(){
         }
         else if(notes[i]["keyColour"]=="black"){
             keyboardKey.className = "blackKey";
-            keyboardKey.style.left = (i+1)*61+"px";
+            keyboardKey.style.left = parseInt((i+1)*61-)+"px";
         }
         else{ //blank
-            
+            continue;
         }
         
         keyboardHolder.appendChild(keyboardKey);
@@ -242,7 +242,7 @@ function findBrowserProperties(){
 	var nAgt = navigator.userAgent;
 	var fullVersion = ''+parseFloat(navigator.appVersion); 
 	var majorVersion = parseInt(navigator.appVersion,10);
-	var nameOffset,verOffset,ix; 
+	var nameOffset,verOffset,ix;
 
     /* BROWSER NAME */
     
