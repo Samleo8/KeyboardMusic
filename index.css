@@ -169,6 +169,7 @@ div.blackKey.active{
 }
 
 .pianoKeyHelp{
+    position: absolute;
 	text-transform:capitalize;
 	font-size:16px;
     
@@ -178,9 +179,12 @@ div.blackKey.active{
 	
     border:none;
 	height:auto;
+    
+    z-index: 100;
 }
 
 .keyboardKeyHelp{
+    position: absolute;
 	text-transform:capitalize;
 	font-size:16px;
     font-weight:700;
@@ -191,6 +195,8 @@ div.blackKey.active{
 	
     border:none;
 	height:auto;
+    
+    z-index: 100;
 }
 
 input[type=text]{

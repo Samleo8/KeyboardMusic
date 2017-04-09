@@ -144,6 +144,7 @@ function pageInit(){
     var keyboardHolder = document.getElementById("keyboardHolder");
     var whiteKeyWidth = 55;
     var blackKeyWidth = 22;
+    var helpWidth = 16;
     var out = '';
     
     for(var i=0;i<notes.length;i++){
@@ -152,19 +153,29 @@ function pageInit(){
         keyboardKey = document.createElement("div");
         
         if(notes[i]["keyColour"]=="white"){
+            //Create the keys dynamically
             keyboardKey.className = "whiteKey"
             keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
             keyboardKey.style.left = i*(whiteKeyWidth+1)+"px";
             
+            //Create the keyboard and piano key helps dynamically
+            keyboardKeyHelp = document.createElement("div");
+            keyboardKeyHelp.className = "keyboardKeyHelp";
+            
+            keyboardKeyHelp.style.left = parseInt(i*(whiteKeyWidth+1)-helpWidth/2)+"px";
+            keyboardKeyHelp.innerHTML = notes[i]["computerKey"];
             
             //Event Listener
             keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
             keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
         }
         else if(notes[i]["keyColour"]=="black"){
+            //Create the keys dynamically
             keyboardKey.className = "blackKey";
             keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
             keyboardKey.style.left = parseInt((i-11)*(whiteKeyWidth+1)-blackKeyWidth/2)+"px";
+            
+            //Create the keyboard and piano key helps dynamically
             
             
             //Event Listener
@@ -173,6 +184,7 @@ function pageInit(){
         }
         
         keyboardHolder.appendChild(keyboardKey);
+        keyboardHolder.appendChild(keyboardKeyHelp);
     }    
     
     //Add event listeners
