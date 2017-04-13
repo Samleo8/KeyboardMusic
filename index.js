@@ -129,6 +129,8 @@ var notes = [
         "keyColour":"black"
     }
 ];
+
+var audio = [];
     
 var noteTiming = 500; //in ms
 
@@ -156,19 +158,15 @@ function loadNotes(){
     for(var i=0;i<notes.length;i++){        
         if(notes[i]["keyColour"]=="blank") continue;
         
-        noteAudio = document.createElement("audio");
-        noteAudio.id = "note_i";
-        noteAudio.hidden = "hidden";
-        if(!i) noteAudio.innerHTML = "<b>Unfortunately, the keyboard will not work as your browser does not support the <audio> tag. </b>"; 
+        noteAudio = new Audio(notes[i]["file"]);
+        if(typeof noteAudio.loop == 'boolean') {
+            noteAudio.loop = false;
+        }
         
-        //Give the audio its source
-        noteAudioSource = document.createElement("source");
-        noteAudioSource.src = notes[i]["file"];
-        noteAudioSource.type = "audio/mpeg";
-        
-        //Append divs to holder
-        audioHolder.appendChild(noteAudio);
-        noteAudio.appendChild(noteAudioSource);
+        audio.push({
+            "audio":noteAudio,
+            "audioPlaying":false
+        });
     }    
 } 
 
@@ -229,7 +227,18 @@ function createKeyboard(){
 
 /*-----------------MUSIC PLAYING---------------------*/
 function playNote(i){
+    if(audio[i]["playing"]==true) return;
     
+    audio[i]["audio"].currentTime = 0;
+    audio[i]["audio"].play();
+    audio[i]["playing"] = true;
+}
+
+function stopNote(i){
+    audio[i]["audio"].currentTime = 0;
+    audio[i]["audio"].pause();
+    
+    audio[i]["playing"] = false;
 }
 
 /*-----------------EVENT LISTENERS---------------------*/
@@ -261,11 +270,14 @@ function keyboard_release(e){
 
 function pianoKeyPress(ele){
     ele.className += " active";
+    
+    playNote(ele.id.split("key_")[1]);
 }
 
 function pianoKeyRelease(ele){
     ele.className = ele.className.replaceAll(" active","");
     
+    stopNote(ele.id.split("key_")[1]);
 }
 
 /*
