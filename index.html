@@ -12,8 +12,8 @@
     </noscript>
     <h2 class="border-underline">Keyboard Music</h2>
     <p>This is a virtual music keyboard played with none other than your computer keyboard!</p>
-    <p>How to play? Easy! Just use the keys in the middle row of your keyboard. You can also use the mouse to click and rollover, but of course, it would be impossible to properly play...</p>
-    <p>You can use the bar below to type in notes and it will play the song for you! Choose how you want to split/separate the notes (leave it empty if you don't have a separation method)! Enjoy</p>
+    <p>How to play? Easy! Just use the keys in the middle row of your keyboard. You can also tap or rollover with your mouse</p>
+    <p>You can use the bar below to type in notes and it will play the song for you! You can also choose how you want to split/separate the notes (leave it empty if you don't have a separation method). Enjoy!</p>
     
     <input type="text" id="music" onkeyup="javascript:if(event.keyCode==13){setMusic(this.value)}" onfocus="disableKeyboard(true)" onblur="disableKeyboard(false)" />
     
@@ -28,10 +28,13 @@
     <p>Mary had a Little Lamb: <input type="text" id="mMaryHadALittleLamb" value="EDCDEEEDDDEGGEDCDEEEEDDEDC" readonly="readonly" /><input type="submit" onclick="javascript:setMusic(document.getElementById('m'+this.id).value);" id="MaryHadALittleLamb" value="Start Music!" /></p>
     <p>Ode to Joy: <input type="text" value="EEFGGFEDCCDEEDDEEFGGFEDCCDEDCC" id="mOdeToJoy" readonly="readonly" /><input type="submit" onclick="javascript:setMusic(document.getElementById('m'+this.id).value);" id="OdeToJoy" value="Start Music!" /></p>
     <p>Random Song: <input type="text" value="DAFAEDAADDDAADDAAFAEEFAEDDAAED" id="mRanSong" readonly="readonly" /><input type="submit" onclick="javascript:setMusic(document.getElementById('m'+this.id).value);" id="RanSong" value="Start Music!" /></p>
+
+    <div id="audioHolder"></div>
     
     <div id="keyboard-global-container" class="flex-container">
         <div id="keyboardHolder"></div>
     </div>
 
+    
 </body>
 </html>

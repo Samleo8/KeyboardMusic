@@ -28,85 +28,88 @@ domReady(function(){
 var notes = [
     {
         "pianoKey":"C",
-        "computerKey":"A".charCodeAt(),
+        "computerKeyCode":"A".charCodeAt(),
         "file":"audio/c.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"D",
-        "computerKey":"S".charCodeAt(),
+        "computerKeyCode":"S".charCodeAt(),
         "file":"audio/d.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"E",
-        "computerKey":"D".charCodeAt(),
+        "computerKeyCode":"D".charCodeAt(),
         "file":"audio/e.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"F",
-        "computerKey":"F".charCodeAt(),
+        "computerKeyCode":"F".charCodeAt(),
         "file":"audio/f.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"G",
-        "computerKey":"G".charCodeAt(),
+        "computerKeyCode":"G".charCodeAt(),
         "file":"audio/g.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"A",
-        "computerKey":"H".charCodeAt(),
+        "computerKeyCode":"H".charCodeAt(),
         "file":"audio/a.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"B",
-        "computerKey":"J".charCodeAt(),
+        "computerKeyCode":"J".charCodeAt(),
         "file":"audio/b.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"C1",
-        "computerKey":"K".charCodeAt(),
+        "computerKeyCode":"K".charCodeAt(),
         "file":"audio/c1.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"D1",
-        "computerKey":"L".charCodeAt(),
+        "computerKeyCode":"L".charCodeAt(),
         "file":"audio/d1.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"E1",
-        "computerKey":186,
+        "computerKey":";",
+        "computerKeyCode":186,
         "file":"audio/e1.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"F1",
-        "computerKey":222,
+        "computerKey":"'",
+        "computerKeyCode":222,
         "file":"audio/f1.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"G1",
-        "computerKey":13,
+        "computerKey":"Enter",
+        "computerKeyCode":13,
         "file":"audio/g1.mp3",
         "keyColour":"white"
     },
     {
         "pianoKey":"C#",
-        "computerKey":"W".charCodeAt(),
+        "computerKeyCode":"W".charCodeAt(),
         "file":"audio/cs.mp3",
         "keyColour":"black"
     },
     {
         "pianoKey":"D#",
-        "computerKey":"E".charCodeAt(),
+        "computerKeyCode":"E".charCodeAt(),
         "file":"audio/ds.mp3",
         "keyColour":"black"
     },
@@ -115,13 +118,13 @@ var notes = [
     },
     {
         "pianoKey":"F#",
-        "computerKey":"T".charCodeAt(),
+        "computerKeyCode":"T".charCodeAt(),
         "file":"audio/fs.mp3",
         "keyColour":"black"
     },
     {
         "pianoKey":"G#",
-        "computerKey":"Y".charCodeAt(),
+        "computerKeyCode":"Y".charCodeAt(),
         "file":"audio/gs.mp3",
         "keyColour":"black"
     }
@@ -137,17 +140,46 @@ function pageInit(){
     browserProperties = findBrowserProperties();
     
 	if(browserProperties["OSName"] == "Windows"){
-        notes[10]["computerKey"] = 192;
+        notes[10]["computerKeyCode"] = 192;
     }        
     
+    //Load notes
+    loadNotes();
+    
     //Create keyboard dynamically
+    createKeyboard();
+}
+
+function loadNotes(){
+    var audioHolder = document.getElementById("audioHolder");
+    
+    for(var i=0;i<notes.length;i++){        
+        if(notes[i]["keyColour"]=="blank") continue;
+        
+        noteAudio = document.createElement("audio");
+        noteAudio.id = "note_i";
+        noteAudio.hidden = "hidden";
+        if(!i) noteAudio.innerHTML = "<b>Unfortunately, the keyboard will not work as your browser does not support the <audio> tag. </b>"; 
+        
+        //Give the audio its source
+        noteAudioSource = document.createElement("source");
+        noteAudioSource.src = notes[i]["file"];
+        noteAudioSource.type = "audio/mpeg";
+        
+        //Append divs to holder
+        audioHolder.appendChild(noteAudio);
+        noteAudio.appendChild(noteAudioSource);
+    }    
+} 
+
+function createKeyboard(){
     var keyboardHolder = document.getElementById("keyboardHolder");
     var whiteKeyWidth = 55;
     var blackKeyWidth = 22;
     var helpWidth = 16;
     var out = '';
     
-    for(var i=0;i<notes.length;i++){
+    for(var i=0;i<notes.length;i++){        
         if(notes[i]["keyColour"]=="blank") continue;
         
         keyboardKey = document.createElement("div");
@@ -155,36 +187,39 @@ function pageInit(){
         if(notes[i]["keyColour"]=="white"){
             //Create the keys dynamically
             keyboardKey.className = "whiteKey"
-            keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
+            keyboardKey.id = "key_"+i;
             keyboardKey.style.left = i*(whiteKeyWidth+1)+"px";
-            
-            //Create the keyboard and piano key helps dynamically
-            keyboardKeyHelp = document.createElement("div");
-            keyboardKeyHelp.className = "keyboardKeyHelp";
-            
-            keyboardKeyHelp.style.left = parseInt(i*(whiteKeyWidth+1)-helpWidth/2)+"px";
-            keyboardKeyHelp.innerHTML = notes[i]["computerKey"];
-            
-            //Event Listener
-            keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
-            keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
         }
         else if(notes[i]["keyColour"]=="black"){
             //Create the keys dynamically
             keyboardKey.className = "blackKey";
-            keyboardKey.id = "key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"];
+            keyboardKey.id = "key_"+i;
             keyboardKey.style.left = parseInt((i-11)*(whiteKeyWidth+1)-blackKeyWidth/2)+"px";
-            
-            //Create the keyboard and piano key helps dynamically
-            
-            
-            //Event Listener
-            keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
-            keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
         }
         
+        //Create the keyboard key helps dynamically
+        keyboardKeyHelp = document.createElement("div");
+        keyboardKeyHelp.className = "keyboardKeyHelp";
+
+        keyboardKeyHelp.innerHTML = (notes[i]["computerKey"]!=null && notes[i]["computerKey"]!=undefined)?notes[i]["computerKey"]:String.fromCharCode(parseInt(notes[i]["computerKeyCode"]));
+
+        //Create the piano key helps dynamically
+        pianoKeyHelp = document.createElement("div");
+        pianoKeyHelp.className = "pianoKeyHelp";
+
+        pianoKeyHelp.innerHTML = notes[i]["pianoKey"];
+
+        //Event Listener
+        keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
+        keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
+        
+        keyboardKey.addEventListener("touchstart",function(e){ pianoKeyPress(this); });
+        keyboardKey.addEventListener("touchend",function(e){ pianoKeyPress(this); });
+        
+        //Append divs to holder
         keyboardHolder.appendChild(keyboardKey);
-        keyboardHolder.appendChild(keyboardKeyHelp);
+        keyboardKey.appendChild(keyboardKeyHelp);
+        keyboardKey.appendChild(pianoKeyHelp);
     }    
     
     //Add event listeners
@@ -192,12 +227,18 @@ function pageInit(){
     window.addEventListener("keyup",keyboard_release);
 }
 
+/*-----------------MUSIC PLAYING---------------------*/
+function playNote(i){
+    
+}
+
+/*-----------------EVENT LISTENERS---------------------*/
 function keyboard_press(e){
     for(var i=0;i<notes.length;i++){
         if(notes[i]["keyColour"] == "blank") continue;
         
-        if(e.keyCode==notes[i]["computerKey"]){
-            var ele = document.getElementById("key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"]);
+        if(e.keyCode==notes[i]["computerKeyCode"]){
+            var ele = document.getElementById("key_"+i);
             pianoKeyPress(ele);
             
             break;
@@ -209,8 +250,8 @@ function keyboard_release(e){
     for(var i=0;i<notes.length;i++){
         if(notes[i]["keyColour"] == "blank") continue;
         
-        if(e.keyCode==notes[i]["computerKey"]){
-            var ele = document.getElementById("key_"+notes[i]["pianoKey"]+"_"+notes[i]["computerKey"]);
+        if(e.keyCode==notes[i]["computerKeyCode"]){
+            var ele = document.getElementById("key_"+i);
             pianoKeyRelease(ele);
             
             break;

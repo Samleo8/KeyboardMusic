@@ -117,6 +117,9 @@ img{
     user-select: text;       
 }
 
+/*-----AUDIO HOLDER------*/
+#audioHolder{
+}
 
 /*-------KEYBOARD--------*/
 #keyboard-global-container{
@@ -172,9 +175,8 @@ div.blackKey.active{
     position: absolute;
 	text-transform:capitalize;
 	font-size:16px;
-    
-	bottom:190px;
-	
+
+    left:0; right:0;
     text-align:center;
 	
     border:none;
@@ -183,20 +185,46 @@ div.blackKey.active{
     z-index: 100;
 }
 
+.whiteKey .pianoKeyHelp{
+	bottom:180px;
+}
+
+.blackKey .pianoKeyHelp{
+	bottom:120px;
+}
+
 .keyboardKeyHelp{
     position: absolute;
 	text-transform:capitalize;
-	font-size:16px;
     font-weight:700;
 	
+    left:0; right:0;
     bottom:10px;
-	
+
     text-align:center;
 	
     border:none;
 	height:auto;
     
     z-index: 100;
+}
+
+.whiteKey .keyboardKeyHelp{
+    color:#555;
+    font-size:16px;
+}
+
+.whiteKey.active .keyboardKeyHelp{
+    color:#888;
+}
+
+.blackKey .keyboardKeyHelp{
+    color:#DDD;
+    font-size:13px;
+}
+
+.blackKey.active .keyboardKeyHelp{
+    color:#AAA;
 }
 
 input[type=text]{
