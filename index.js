@@ -130,6 +130,8 @@ var notes = [
     }
 ];
 
+var notes_pianoKey = {};
+
 var audio = [];
     
 var noteTiming = 500; //in ms
@@ -167,6 +169,8 @@ function loadNotes(){
             "audio":noteAudio,
             "audioPlaying":false
         });
+        
+        notes_pianoKey[notes[i]["pianoKey"]] = i;
     }    
 } 
 
@@ -235,10 +239,21 @@ function playNote(i){
 }
 
 function stopNote(i){
-    audio[i]["audio"].currentTime = 0;
-    audio[i]["audio"].pause();
+    //audio[i]["audio"].currentTime = 0;
+    //audio[i]["audio"].pause();
     
     audio[i]["playing"] = false;
+}
+
+function playMusic(mus_str){
+    var str = (mus_str!=null && mus_str!=undefined)?mus_str:document.getElementById("music").value;
+    var splitStr = document.getElementById("splitType");
+    
+    var notesArr = str.split(splitStr);
+    
+    for(var i=0;i<notesArr.length;i++){
+        if()
+    }
 }
 
 /*-----------------EVENT LISTENERS---------------------*/
