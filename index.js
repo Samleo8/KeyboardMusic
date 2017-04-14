@@ -159,7 +159,13 @@ function loadNotes(){
     var audioHolder = document.getElementById("audioHolder");
     
     for(var i=0;i<notes.length;i++){        
-        if(notes[i]["keyColour"]=="blank") continue;
+        if(notes[i]["keyColour"]=="blank"){
+            audio.push({
+                "audio":null,
+                "audioPlaying":false
+            });
+            continue;
+        }
         
         noteAudio = new Audio(notes[i]["file"]);
         if(typeof noteAudio.loop == 'boolean') {
@@ -299,34 +305,32 @@ var Song = function(_args){
     };
     
     this.stop = function(){
-        
-        
         clearInterval(this.timer);
         this.notesArr = [];
         this.index = 0;
+        
+        for(var j=0;j<notes.length;j++){ //release all keys
+            if(notes[j]["keyColour"]!="blank") pianoKeyRelease(document.getElementById("key_"+j));
+        }
     };
     
-    this.playNotes = function(){        
-        if(song.notesArr.length == 0 || song.notesArr == null) return;
+    this.playNotes = function(){ 
+        if(song.notesArr.length == 0 || song.notesArr == null || song.index==song.notesArr.length){
+            song.stop();
+            return;
+        }
         
         var noteIndex = parseInt(notes_pianoKey[song.notesArr[song.index].toUpperCase()]);
         var noteIndexPrev = (song.index)?parseInt(notes_pianoKey[song.notesArr[song.index-1].toUpperCase()]):0;
         
-        if( noteIndex!=null && noteIndex!=undefined && !isNaN(noteIndex) ){
-            if(song.index>0 && !isNaN(noteIndexPrev)){
-                pianoKeyRelease( document.getElementById("key_"+noteIndexPrev) );
-            }
-            pianoKeyPress(document.getElementById("key_"+noteIndex));
-        }
-        else{ 
-            //just some pause
-            console.log("pause");
+        if(song.index>0 && !isNaN(noteIndexPrev)){ //clear previous key
+            pianoKeyRelease( document.getElementById("key_"+noteIndexPrev) );
         }
         
-        if(song.index==song.notesArr.length){
-            pianoKeyRelease(document.getElementById("key_"+noteIndex));
-            clearInterval(song.timer);
+        if( noteIndex!=null && noteIndex!=undefined && !isNaN(noteIndex) ){
+            pianoKeyPress(document.getElementById("key_"+noteIndex));
         }
+        
         song.index++;
     };
     
