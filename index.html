@@ -12,13 +12,13 @@
     </noscript>
     <h2 class="border-underline">Keyboard Music</h2>
     <p>This is a virtual music keyboard played with none other than your computer keyboard!</p>
-    <p>How to play? Easy! Just use the keys in the middle row of your keyboard. You can also tap or rollover with your mouse</p>
-    <p>You can use the bar below to type in notes and it will play the song for you! You can also choose how you want to split/separate the notes (leave it empty if you don't have a separation method). Enjoy!</p>
+    <p>How to play? Just use the (computer) keys in the middle row of your keyboard, or tap or click on the (piano) keys.</p>
+    <p>You can even use the bar below to type in notes and it will play the song for you! You can also choose how you want to split/separate the notes (leave it empty if you don't have a separation method). Enjoy!</p>
     
-    <input type="text" id="music" onkeyup="javascript:if(event.keyCode==13){playMusic(this.value)}" onfocus="disableKeyboard(true)" onblur="disableKeyboard(false)" />
+    <input type="text" id="music" onkeyup="javascript:if(event.keyCode==13){playMusic(this.value)}" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false)" />
     
     <span id="options">
-        Split Method <input type="text" maxlength="1" onfocus="disableKeyboard(true)" onblur="disableKeyboard(false);" onkeyup="javascript:if(event.keyCode==13){playMusic(document.getElementById('music').value)}" id="splitType" />
+        Split Method <input type="text" maxlength="1" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false);" onkeyup="javascript:if(event.keyCode==13){song.load();}" id="splitType" />
     </span>
     
     <input type="submit" onclick="javascript:playMusic(document.getElementById('music').value);" value="Start Music!" />
@@ -29,7 +29,7 @@
     <p>Ode to Joy: <input type="text" value="EEFGGFEDCCDEEDDEEFGGFEDCCDEDCC" id="mOdeToJoy" readonly="readonly" /><input type="submit" onclick="javascript:playMusic(document.getElementById('m'+this.id).value);" id="OdeToJoy" value="Start Music!" /></p>
     <p>Random Song: <input type="text" value="DAFAEDAADDDAADDAAFAEEFAEDDAAED" id="mRanSong" readonly="readonly" /><input type="submit" onclick="javascript:playMusic(document.getElementById('m'+this.id).value);" id="RanSong" value="Start Music!" /></p>
     
-    <div id="keyboard-global-container" class="flex-container">
+    <div id="keyboard-global-container" class="flex-container disableSelect">
         <div id="keyboardHolder"></div>
     </div>
 

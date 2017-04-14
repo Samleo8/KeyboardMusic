@@ -132,9 +132,8 @@ var notes = [
 
 var notes_pianoKey = {};
 
+var song;
 var audio = [];
-    
-var noteTiming = 500; //in ms
 
 var keyboardDisabled = false;
 var browserProperties = {};
@@ -152,6 +151,8 @@ function pageInit(){
     
     //Create keyboard dynamically
     createKeyboard();
+    
+    song = new Song();
 }
 
 function loadNotes(){
@@ -212,11 +213,19 @@ function createKeyboard(){
         pianoKeyHelp.innerHTML = notes[i]["pianoKey"];
 
         //Event Listener
-        keyboardKey.addEventListener("mouseover",function(e){ pianoKeyPress(this); });
-        keyboardKey.addEventListener("mouseout",function(e){ pianoKeyRelease(this); });
+        keyboardKey.addEventListener("mousedown",function(e){
+            if(!keyboardDisabled) pianoKeyPress(this);
+        });
+        keyboardKey.addEventListener("mouseup",function(e){
+            if(!keyboardDisabled) pianoKeyRelease(this);
+        });
         
-        keyboardKey.addEventListener("touchstart",function(e){ pianoKeyPress(this); });
-        keyboardKey.addEventListener("touchend",function(e){ pianoKeyPress(this); });
+        keyboardKey.addEventListener("touchstart",function(e){
+            if(!keyboardDisabled) pianoKeyPress(this);
+        });
+        keyboardKey.addEventListener("touchend",function(e){
+            if(!keyboardDisabled) pianoKeyRelease(this);
+        });
         
         //Append divs to holder
         keyboardHolder.appendChild(keyboardKey);
@@ -229,8 +238,77 @@ function createKeyboard(){
     window.addEventListener("keyup",keyboard_release);
 }
 
+function setKeyboardState(state){
+    keyboardDisabled = state;
+}
+
 /*-----------------MUSIC PLAYING---------------------*/
-function playNote(i){
+var Song = function(_args){
+    var args = (_args==null)?{}:_args;
+    
+    if(args["index"] == null) args["index"] = 0;
+    if(args["notes"] == null) args["notes"] = [];
+    if(args["noteTiming"] == null) args["noteTiming"] = [];
+    
+    this.index = args["index"];
+    this.notes = args["notes"];
+    this.noteTiming = args["noteTiming"];
+    
+    this.songTimer;
+    
+    this.load = function(mus_str){
+        var str = (mus_str!=null && mus_str!=undefined)?mus_str:document.getElementById("music").value;
+        
+        var splitStr = document.getElementById("splitType").value;
+
+        console.log(this);
+        var m = splitStr.match(new RegExp("[a-g1]","gi"));
+        if(m!=null && m.length>0){
+            error("Split method cannot correspond with that of the piano keys");
+            return;
+        }
+        
+        this.notes = str.split(splitStr);
+    
+        if(splitStr==""){
+            //Take care of finding the special notes like "C#" and "D1"
+            var specialNotesArr = str.allIndexOf("[c-g](1|#)","gi");
+            
+            for(var i=0;i<specialNotesArr.length;i++){
+                var ind = specialNotesArr[i];
+                
+                this.notes[ind] = this.notes[ind]+""+this.notes[ind+1];
+            }
+            
+            for(var i=specialNotesArr.length-1;i>=0;i--){
+                this.notes.splice(specialNotesArr[i]+1,1);
+            }
+        }
+
+        this.index = 0;
+        
+        return this.notes;
+    };
+    
+    this.play = function(){
+        
+        
+        if(this.notes.length<this.index) this.index++;
+        else{ //stop the play
+            
+        }
+    }
+};
+
+function playNote(i,id_method){
+    if(id_method==null) id_method = "index";
+    
+    if(id_method=="index"){}
+    else if(id_method=="note" || id_method=="letter" || id_method.split("-").join("").split("_").join("").toLowerCase()=="pianokey"){
+        i = notes_pianoKey[i.toUpperCase()];
+    }
+    else error("Cannot identify note");
+    
     if(audio[i]["playing"]==true) return;
     
     audio[i]["audio"].currentTime = 0;
@@ -238,26 +316,22 @@ function playNote(i){
     audio[i]["playing"] = true;
 }
 
-function stopNote(i){
-    //audio[i]["audio"].currentTime = 0;
-    //audio[i]["audio"].pause();
+function stopNote(i,id_method){
+    if(id_method==null) id_method = "index";
+    
+    if(id_method=="index"){}
+    else if(id_method=="note" || id_method=="letter" || id_method.split("-").join("").split("_").join("").toLowerCase()=="pianokey"){
+        i = notes_pianoKey[i.toUpperCase()];
+    }
+    else error("Cannot identify note");
     
     audio[i]["playing"] = false;
 }
 
-function playMusic(mus_str){
-    var str = (mus_str!=null && mus_str!=undefined)?mus_str:document.getElementById("music").value;
-    var splitStr = document.getElementById("splitType");
-    
-    var notesArr = str.split(splitStr);
-    
-    for(var i=0;i<notesArr.length;i++){
-        if()
-    }
-}
-
 /*-----------------EVENT LISTENERS---------------------*/
 function keyboard_press(e){
+    if(keyboardDisabled) return;
+    
     for(var i=0;i<notes.length;i++){
         if(notes[i]["keyColour"] == "blank") continue;
         
@@ -271,6 +345,8 @@ function keyboard_press(e){
 }
 
 function keyboard_release(e){
+    if(keyboardDisabled) return;
+    
     for(var i=0;i<notes.length;i++){
         if(notes[i]["keyColour"] == "blank") continue;
         
@@ -295,71 +371,16 @@ function pianoKeyRelease(ele){
     stopNote(ele.id.split("key_")[1]);
 }
 
-/*
-function setMusic(musicz){
-	note=0;
-	splitType=document.getElementById("splitType").value;
-	song = new Array();
-	disableKeyboard(false);
-	music = musicz.split(splitType);
-	for(a=0;a<music.length;a++){
-		music[a] = music[a].toUpperCase();
-		if(splitType==""&&(music[a]=="C"||music[a]=="D"||music[a]=="E"||music[a]=="F")&&a!=music.length){
-			if(music[a+1]=="1"){	
-				music[a]=music[a]+"1";
-				for(b=8;b<notes.length;b++){
-					if(notes[b]==music[a]){
-						song.push(keys[b]);
-						break;
-					}
-				}
-				a++; //skip the 1
-			}
-			else{
-			for(b=0;b<notes.length;b++){
-					if(notes[b]==music[a]){
-						song.push(keys[b]);
-						break;
-					}
-				}
-			}
-		}
-		else{
-			for(b=0;b<notes.length;b++){
-				if(notes[b]==music[a]){
-					song.push(keys[b]);
-					break;
-				}
-			}
-		}
-	}
-	timer = setInterval(playMusic,noteTiming);
+/*------------MESSAGES AND ERRORS--------------*/
+function message(msg){
+    console.log(msg);
+    
 }
 
-function playMusic(){
-	if(note!=0){
-		keyBoardUp(song[note-1]);
-	}
-	keyBoardDown(song[note]);
-	if(note==song.length){
-		keyBoardUp(song[note]);
-		clearInterval(timer);
-	}
-	note++;
+function error(msg){
+    console.error(msg);
+    
 }
-
-function disableKeyboard(disable){
-	keyboardDisabled = disable;
-}
-
-function cancelMusic(){
-	song = [];
-	clearInterval(timer);
-	for(a=0;a<keys.length;a++){
-		keyBoardUp(keys[a]);
-	}
-}
-*/
 
 /*------------BROWSER PROPERTIES--------------*/
 function findBrowserProperties(){
@@ -422,4 +443,16 @@ String.prototype.replaceAll = function(find, replace){
 
 String.prototype.removeAll = function(find){
     return this.replaceAll(find,"");
+}
+
+String.prototype.allIndexOf = function(find,regexProp){
+    var regexp = (typeof find == "object")?find:(new RegExp(find.toString(),(regexProp==null)?"gi":regexProp));
+    
+    var match, matches = [];
+
+    while ((match = regexp.exec(this)) != null) {
+        matches.push(match.index);
+    }
+    
+    return matches;
 }
