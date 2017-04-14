@@ -15,19 +15,26 @@
     <p>How to play? Just use the (computer) keys in the middle row of your keyboard, or tap or click on the (piano) keys.</p>
     <p>You can even use the bar below to type in notes and it will play the song for you! You can also choose how you want to split/separate the notes (leave it empty if you don't have a separation method). Enjoy!</p>
     
-    <input type="text" id="music" onkeyup="javascript:if(event.keyCode==13){playMusic(this.value)}" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false)" />
+    <input type="text" id="music" onkeyup="javascript:if(event.keyCode==13){ song.start(); }" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false)" />
     
     <span id="options">
-        Split Method <input type="text" maxlength="1" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false);" onkeyup="javascript:if(event.keyCode==13){song.load();}" id="splitType" />
+        Split Method <input type="text" maxlength="1" onfocus="setKeyboardState(true)" onblur="setKeyboardState(false);" onkeyup="javascript:if(event.keyCode==13){ song.start(); }" id="splitType" />
     </span>
     
-    <input type="submit" onclick="javascript:playMusic(document.getElementById('music').value);" value="Start Music!" />
-    <input type="submit" onclick="cancelMusic()" value="Stop Music!" />
+    <input type="submit" onmouseup="javascript:if(event.keyCode==13){ song.start(); }" value="Start Music!" />
+    <input type="submit" onmouseup="song.stop()" value="Stop Music!" />
 
     <h3 class="strong underline">Presets:</h3>
-    <p>Mary had a Little Lamb: <input type="text" id="mMaryHadALittleLamb" value="EDCDEEEDDDEGGEDCDEEEEDDEDC" readonly="readonly" /><input type="submit" onclick="javascript:playMusic(document.getElementById('m'+this.id).value);" id="MaryHadALittleLamb" value="Start Music!" /></p>
-    <p>Ode to Joy: <input type="text" value="EEFGGFEDCCDEEDDEEFGGFEDCCDEDCC" id="mOdeToJoy" readonly="readonly" /><input type="submit" onclick="javascript:playMusic(document.getElementById('m'+this.id).value);" id="OdeToJoy" value="Start Music!" /></p>
-    <p>Random Song: <input type="text" value="DAFAEDAADDDAADDAAFAEEFAEDDAAED" id="mRanSong" readonly="readonly" /><input type="submit" onclick="javascript:playMusic(document.getElementById('m'+this.id).value);" id="RanSong" value="Start Music!" /></p>
+    <p>Mary had a Little Lamb:
+        <input type="text" id="mMaryHadALittleLamb" value="EDCDEEEDDDEGGEDCDEEEEDDEDC" readonly="readonly" />
+        <input type="submit" onclick="javascript:song.start(document.getElementById('m'+this.id).value);" id="MaryHadALittleLamb" value="Start Music!" />
+    </p>
+    <p>Ode to Joy:
+        <input type="text" value="EEFGGFEDCCDEEDDEEFGGFEDCCDEDCC" id="mOdeToJoy" readonly="readonly" />
+        <input type="submit" onclick="javascript:song.start(document.getElementById('m'+this.id).value);" id="OdeToJoy" value="Start Music!" /></p>
+    <p>Random Song:
+        <input type="text" value="DAFAEDAADDDAADDAAFAEEFAEDDAAED" id="mRanSong" readonly="readonly" />
+        <input type="submit" onclick="javascript:song.start(document.getElementById('m'+this.id).value);" id="RanSong" value="Start Music!" /></p>
     
     <div id="keyboard-global-container" class="flex-container disableSelect">
         <div id="keyboardHolder"></div>

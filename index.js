@@ -248,27 +248,31 @@ var Song = function(_args){
     
     if(args["index"] == null) args["index"] = 0;
     if(args["notes"] == null) args["notes"] = [];
-    if(args["noteTiming"] == null) args["noteTiming"] = [];
+    if(args["noteTiming"] == null) args["noteTiming"] = 500;
     
     this.index = args["index"];
-    this.notes = args["notes"];
+    this.notesArr = args["notes"];
     this.noteTiming = args["noteTiming"];
     
-    this.songTimer;
+    this.timer;
+    
+    this.start = function(mus_str){
+        this.load(mus_str);
+        this.play();
+    }
     
     this.load = function(mus_str){
         var str = (mus_str!=null && mus_str!=undefined)?mus_str:document.getElementById("music").value;
         
         var splitStr = document.getElementById("splitType").value;
 
-        console.log(this);
         var m = splitStr.match(new RegExp("[a-g1]","gi"));
         if(m!=null && m.length>0){
             error("Split method cannot correspond with that of the piano keys");
             return;
         }
         
-        this.notes = str.split(splitStr);
+        this.notesArr = str.split(splitStr);
     
         if(splitStr==""){
             //Take care of finding the special notes like "C#" and "D1"
@@ -277,34 +281,62 @@ var Song = function(_args){
             for(var i=0;i<specialNotesArr.length;i++){
                 var ind = specialNotesArr[i];
                 
-                this.notes[ind] = this.notes[ind]+""+this.notes[ind+1];
+                this.notesArr[ind] = this.notesArr[ind]+""+this.notesArr[ind+1];
             }
             
             for(var i=specialNotesArr.length-1;i>=0;i--){
-                this.notes.splice(specialNotesArr[i]+1,1);
+                this.notesArr.splice(specialNotesArr[i]+1,1);
             }
         }
 
         this.index = 0;
         
-        return this.notes;
+        return this.notesArr;
     };
     
     this.play = function(){
+        this.timer = setInterval(this.playNotes,this.noteTiming);
+    };
+    
+    this.stop = function(){
         
         
-        if(this.notes.length<this.index) this.index++;
-        else{ //stop the play
-            
+        clearInterval(this.timer);
+        this.notesArr = [];
+        this.index = 0;
+    };
+    
+    this.playNotes = function(){        
+        if(song.notesArr.length == 0 || song.notesArr == null) return;
+        
+        var noteIndex = parseInt(notes_pianoKey[song.notesArr[song.index].toUpperCase()]);
+        var noteIndexPrev = (song.index)?parseInt(notes_pianoKey[song.notesArr[song.index-1].toUpperCase()]):0;
+        
+        if( noteIndex!=null && noteIndex!=undefined && !isNaN(noteIndex) ){
+            if(song.index>0 && !isNaN(noteIndexPrev)){
+                pianoKeyRelease( document.getElementById("key_"+noteIndexPrev) );
+            }
+            pianoKeyPress(document.getElementById("key_"+noteIndex));
         }
-    }
+        else{ 
+            //just some pause
+            console.log("pause");
+        }
+        
+        if(song.index==song.notesArr.length){
+            pianoKeyRelease(document.getElementById("key_"+noteIndex));
+            clearInterval(song.timer);
+        }
+        song.index++;
+    };
+    
 };
 
 function playNote(i,id_method){
     if(id_method==null) id_method = "index";
     
     if(id_method=="index"){}
-    else if(id_method=="note" || id_method=="letter" || id_method.split("-").join("").split("_").join("").toLowerCase()=="pianokey"){
+    else if(id_method=="note" || id_method=="letter" || id_method.replaceAll("-","").replaceAll("_","").toLowerCase()=="pianokey"){
         i = notes_pianoKey[i.toUpperCase()];
     }
     else error("Cannot identify note");
@@ -360,12 +392,16 @@ function keyboard_release(e){
 }
 
 function pianoKeyPress(ele){
+    //if(ele==null) return;
+    
     ele.className += " active";
     
     playNote(ele.id.split("key_")[1]);
 }
 
 function pianoKeyRelease(ele){
+    //if(ele==null) return;
+    
     ele.className = ele.className.replaceAll(" active","");
     
     stopNote(ele.id.split("key_")[1]);
